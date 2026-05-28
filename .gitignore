@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.python_packages/
+
+# Azure Functions
+local.settings.json
+__azurite_db*__.json
+__blobstorage__/
+__queuestorage__/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Deployment artifacts
+*.zip
