@@ -93,8 +93,18 @@ Remove-Item $policyFile -Force
 
 # 6. Deploy the function code
 Write-Host "[6/6] Deploying function code..." -ForegroundColor Yellow
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$scriptDir = if ($MyInvocation.MyCommand.Path) { Split-Path -Parent $MyInvocation.MyCommand.Path } `
+             elseif ($PSScriptRoot) { $PSScriptRoot } `
+             else { Get-Location }
 $functionDir = Join-Path $scriptDir "..\function-app"
+if (-not (Test-Path "$functionDir\function_app.py")) {
+    # Fallback: look relative to current directory
+    $functionDir = Join-Path (Get-Location) "function-app"
+}
+if (-not (Test-Path "$functionDir\function_app.py")) {
+    Write-Host "ERROR: Cannot find function-app/function_app.py. Run this script from the repo root or the scripts/ directory." -ForegroundColor Red
+    exit 1
+}
 $zipPath = Join-Path $env:TEMP "hubspoke-function.zip"
 Compress-Archive -Path "$functionDir\function_app.py", "$functionDir\host.json", "$functionDir\requirements.txt" -DestinationPath $zipPath -Force
 
