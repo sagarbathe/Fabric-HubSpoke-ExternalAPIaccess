@@ -1,4 +1,4 @@
-# Parameters cell - these get overridden by notebookutils.notebook.run() arguments
-api_name = ""
-params = "{}"
-spoke_id = "unknown"
+# Parameters cell - overridden by Pipeline_1
+api_url = ""          # Full API URL to call via proxy
+lakehouse_name = ""   # Target lakehouse name in spoke workspace
+table_name = ""       # Target table name to write results

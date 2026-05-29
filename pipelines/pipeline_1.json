@@ -1,0 +1,99 @@
+{
+  "properties": {
+    "parameters": {
+      "api_url": {
+        "type": "String",
+        "defaultValue": ""
+      },
+      "lakehouseName": {
+        "type": "String",
+        "defaultValue": "PublicHolidays_720"
+      },
+      "tableName": {
+        "type": "String",
+        "defaultValue": "api_results"
+      }
+    },
+    "activities": [
+      {
+        "name": "Call Hub notebook",
+        "type": "TridentNotebook",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "notebookId": "<HUB_NOTEBOOK_ID>",
+          "workspaceId": "<HUB_WORKSPACE_ID>",
+          "parameters": {
+            "api_url": {
+              "value": {
+                "value": "@pipeline().parameters.api_url",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "lakehouse_name": {
+              "value": {
+                "value": "@pipeline().parameters.lakehouseName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "table_name": {
+              "value": {
+                "value": "@pipeline().parameters.tableName",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "name": "Call Spoke notebook",
+        "description": "Read the API output from lakehouse table",
+        "type": "TridentNotebook",
+        "dependsOn": [
+          {
+            "activity": "Call Hub notebook",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "notebookId": "<SPOKE_NOTEBOOK_ID>",
+          "workspaceId": "<SPOKE_WORKSPACE_ID>",
+          "parameters": {
+            "lakehouse_name": {
+              "value": {
+                "value": "@pipeline().parameters.lakehouseName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "table_name": {
+              "value": {
+                "value": "@pipeline().parameters.tableName",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        }
+      }
+    ]
+  }
+}
