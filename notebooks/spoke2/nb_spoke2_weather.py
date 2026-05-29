@@ -1,6 +1,6 @@
 # Spoke 2: Weather (WS_Spoke2)
-# Calls Hub -> Azure Function -> Open-Meteo API for zip 75022
-# Pattern: Spoke2 -> Hub -> Azure Function (CallApi) -> Open-Meteo -> back
+# Calls Hub notebook which builds the request and routes through the generic proxy
+# Pattern: Spoke2 -> Hub (builds URL + transforms response) -> Function App (proxy) -> Open-Meteo
 import json
 from pyspark.sql.types import StructType, StructField, StringType, FloatType
 

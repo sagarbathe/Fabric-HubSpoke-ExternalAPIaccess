@@ -1,6 +1,6 @@
 # Spoke 1: Zip Code Info (WS_Spoke1)
-# Calls Hub -> Azure Function -> Zippopotam.us API for zip 75022
-# Pattern: Spoke1 -> Hub -> Azure Function (CallApi) -> Zippopotam.us -> back
+# Calls Hub notebook which builds the request and routes through the generic proxy
+# Pattern: Spoke1 -> Hub (builds URL + transforms response) -> Function App (proxy) -> Zippopotam.us
 import json
 from pyspark.sql.types import StructType, StructField, StringType
 
